@@ -1,0 +1,15 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-buildops-challenge-dev-200521-authRole",
+            "UnauthRoleArn": "arn:aws:iam::692280700182:role/amplify-buildops-challenge-dev-200521-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::692280700182:role/amplify-buildops-challenge-dev-200521-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-buildops-challenge-dev-200521-deployment",
+            "UnauthRoleName": "amplify-buildops-challenge-dev-200521-unauthRole",
+            "StackName": "amplify-buildops-challenge-dev-200521",
+            "StackId": "arn:aws:cloudformation:us-west-2:692280700182:stack/amplify-buildops-challenge-dev-200521/b1f90400-5f5f-11ea-a7a3-022add0a84f2",
+            "AmplifyAppId": "d3d6m8hb6hy9iv"
+        }
+    }
+}
