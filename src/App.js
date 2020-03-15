@@ -1,6 +1,17 @@
-import React, { useEffect } from "react";
-import { Container, makeStyles, useTheme, useMediaQuery } from "@material-ui/core";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  Container,
+  makeStyles,
+  useTheme,
+  useMediaQuery
+} from "@material-ui/core";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
+import "./App.css";
 import AppBar from "./components/AppBar/AppBar";
 import MenuDrawer from "./components/MenuDrawer/MenuDrawer";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -19,6 +30,11 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
     padding: 0
   },
+  contentContainer: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%"
+  },
   toolbar: {
     display: "flex",
     alignItems: "center",
@@ -27,8 +43,9 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(3)
+    display: "flex",
+    padding: theme.spacing(3),
+    overflow: "auto"
   }
 }));
 
@@ -36,22 +53,22 @@ export default function App() {
   const theme = useTheme();
   const classes = useStyles(theme);
   const drawerShouldOpen = useMediaQuery(theme.breakpoints.up("md"));
-  const [drawerOpen, setDrawerOpen] = React.useState(drawerShouldOpen);
-  const [userOverride, setUserOverride] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(drawerShouldOpen);
+  const [userOverride, setUserOverride] = useState(false);
 
   useEffect(() => {
     if (drawerOpen) {
       if (drawerShouldOpen) setUserOverride(false);
       else if (!userOverride) setDrawerOpen(false);
     } else if (drawerShouldOpen) setDrawerOpen(true);
-  }, [drawerOpen, drawerShouldOpen, userOverride]);
+  }, [drawerShouldOpen, drawerOpen, userOverride]);
 
-  const openDrawer = () => {
+  const handleDrawerOpen = () => {
     setUserOverride(true);
     setDrawerOpen(true);
   };
 
-  const closeDrawer = () => {
+  const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
 
@@ -59,20 +76,26 @@ export default function App() {
     <Router>
       <div className={classes.root}>
         <Container className={classes.mainContainer}>
-          <AppBar drawerOpen={drawerOpen} closeDrawer={closeDrawer} openDrawer={openDrawer} />
+          <AppBar
+            drawerOpen={drawerOpen}
+            handleDrawerClose={handleDrawerClose}
+            handleDrawerOpen={handleDrawerOpen}
+          />
           <MenuDrawer drawerOpen={drawerOpen} />
-          <main className={classes.content}>
+          <div className={classes.contentContainer}>
             <div className={classes.toolbar} />
-            <Switch>
-              <Redirect exact from="/" to="/dashboard" />
-              <Route path="/dashboard">
-                <Dashboard />
-              </Route>
-              <Route path="/about">
-                <About />
-              </Route>
-            </Switch>
-          </main>
+            <main className={classes.content}>
+              <Switch>
+                <Redirect exact from="/" to="/dashboard" />
+                <Route path="/dashboard">
+                  <Dashboard />
+                </Route>
+                <Route path="/about">
+                  <About />
+                </Route>
+              </Switch>
+            </main>
+          </div>
         </Container>
       </div>
     </Router>

@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MenuDrawer(props) {
+export default function MenuDrawer({ drawerOpen }) {
   const theme = useTheme();
   const classes = useStyles(theme);
 
@@ -46,13 +46,13 @@ export default function MenuDrawer(props) {
     <Drawer
       variant="permanent"
       className={clsx(classes.drawer, {
-        [classes.drawerOpen]: props.drawerOpen,
-        [classes.drawerClose]: !props.drawerOpen
+        [classes.drawerOpen]: drawerOpen,
+        [classes.drawerClose]: !drawerOpen
       })}
       classes={{
         paper: clsx({
-          [classes.drawerOpen]: props.drawerOpen,
-          [classes.drawerClose]: !props.drawerOpen
+          [classes.drawerOpen]: drawerOpen,
+          [classes.drawerClose]: !drawerOpen
         })
       }}
     >

@@ -5,7 +5,11 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import Amplify from "aws-amplify";
 import awsconfig from "./aws-exports";
-import { createMuiTheme, CssBaseline, MuiThemeProvider } from "@material-ui/core";
+import {
+  createMuiTheme,
+  CssBaseline,
+  MuiThemeProvider
+} from "@material-ui/core";
 
 Amplify.configure(awsconfig);
 

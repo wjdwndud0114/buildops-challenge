@@ -11,19 +11,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function DrawerButton(props) {
+export default function DrawerButton({
+  drawerOpen,
+  handleDrawerClose,
+  handleDrawerOpen
+}) {
   const theme = useTheme();
   const classes = useStyles(theme);
 
   return (
     <IconButton
       color="inherit"
-      aria-label={(props.drawerOpen ? "Close" : "Open") + " drawer"}
-      onClick={props.drawerOpen ? props.closeDrawer : props.openDrawer}
+      aria-label={(drawerOpen ? "Close" : "Open") + " drawer"}
+      onClick={drawerOpen ? handleDrawerClose : handleDrawerOpen}
       edge="start"
       className={classes.menuButton}
     >
-      {props.drawerOpen ? <CloseIcon /> : <MenuIcon />}
+      {drawerOpen ? <CloseIcon /> : <MenuIcon />}
     </IconButton>
   );
 }

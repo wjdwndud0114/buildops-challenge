@@ -32,13 +32,15 @@ export default function AppBar(props) {
     <MuiAppBar position="fixed" className={classes.appBar}>
       <Container className={classes.appBarContainer}>
         <Toolbar>
-          <DrawerButton
-            drawerOpen={props.drawerOpen}
-            closeDrawer={props.closeDrawer}
-            openDrawer={props.openDrawer}
-          />
+          <DrawerButton {...props} />
           <img src={logo} alt="logo" width="50" />
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
             {location.pathname.slice(1).replace(/^./g, t => t.toUpperCase())}
           </Typography>
         </Toolbar>
