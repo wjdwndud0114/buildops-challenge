@@ -8,7 +8,6 @@ export function useSubscribeCUD({
   updateCallback,
   deleteCallback
 }) {
-  console.log("SUBSCRIBE CUD");
   const subscriptionList = [];
   subscriptionList.push(
     API.graphql(graphqlOperation(createSub)).subscribe({

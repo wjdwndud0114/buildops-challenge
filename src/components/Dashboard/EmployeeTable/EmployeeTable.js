@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import EmployeeDetail from "./EmployeeDetail/EmployeeDetail";
-import { API, graphqlOperation } from "aws-amplify";
 import * as subscriptions from "../../../graphql/subscriptions";
 import * as employeeActions from "../../../redux/actions/employeeAction";
 import { useSubscribeCUD } from "../../../hooks/subscription";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-function EmployeeTable({ employeeData, actions }) {
+function EmployeeTable({ employeeData, loading, actions }) {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [currentDetail, setCurrentDetail] = useState(null);
   const subscribe = useSubscribeCUD;
@@ -42,9 +41,10 @@ function EmployeeTable({ employeeData, actions }) {
       <MaterialTable
         title="Employees"
         data={employeeData.map(o => ({ ...o }))} // https://github.com/mbrn/material-table/issues/666
+        isLoading={loading}
         columns={[
           { title: "First Name", field: "firstname" },
-          { title: "Last Name", field: "lastname" },
+          { title: "Last Name", field: "lastname", defaultSort: "asc" },
           {
             title: "Addresses",
             field: "addresses",
@@ -93,7 +93,10 @@ function EmployeeTable({ employeeData, actions }) {
   );
 }
 
-const mapStateToProps = state => ({ employeeData: state.employees });
+const mapStateToProps = state => ({
+  employeeData: state.employees.data,
+  loading: state.employees.tableLoading
+});
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(employeeActions, dispatch)
 });

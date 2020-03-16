@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import { API, graphqlOperation } from "aws-amplify";
 import * as queries from "../../../../../graphql/queries";
-import * as mutations from "../../../../../graphql/mutations";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
