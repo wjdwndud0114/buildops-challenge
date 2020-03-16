@@ -1,4 +1,31 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# UserCtrl
+
+## Setup
+
+Install the CLI (Needs at least v8.x Node.js and v5.x npm):
+`npm install -g @aws-amplify/cli`
+`amplify configure`
+
+Clone project and run the following in the project directory:
+`npm install`
+
+`amplify init`
+
+`amplify push`
+
+## Run
+
+`npm start`
+
+## Deploy
+
+`amplify publish`
+
+## Test
+
+`npm test`
+
+[http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
