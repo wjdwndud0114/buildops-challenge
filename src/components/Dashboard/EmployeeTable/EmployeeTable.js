@@ -2,25 +2,31 @@ import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import EmployeeDetail from "./EmployeeDetail/EmployeeDetail";
 import { API, graphqlOperation } from "aws-amplify";
-import * as queries from "../../../graphql/customQueries";
-import * as mutations from "../../../graphql/mutations";
+import * as subscriptions from "../../../graphql/subscriptions";
+import * as employeeActions from "../../../redux/actions/employeeAction";
+import { useSubscribeCUD } from "../../../hooks/subscription";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-export default function EmployeeTable() {
-  const [employeeData, setEmployeeData] = useState([]);
+function EmployeeTable({ employeeData, actions }) {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [currentDetail, setCurrentDetail] = useState(null);
+  const subscribe = useSubscribeCUD;
 
   useEffect(() => {
-    const fetchEmployeeData = async () => {
-      const result = await API.graphql(
-        graphqlOperation(queries.listEmployeesFull)
-      );
-      setEmployeeData(result.data.listEmployees.items);
-      console.log(result);
-    };
+    actions.loadEmployees();
 
-    fetchEmployeeData();
-  }, []);
+    const subscriptionList = subscribe({
+      createSub: subscriptions.onCreateEmployee,
+      updateSub: subscriptions.onUpdateEmployee,
+      deleteSub: subscriptions.onDeleteEmployee,
+      createCallback: d => actions.onCreateEmployee(d.onCreateEmployee),
+      updateCallback: d => actions.onUpdateEmployee(d.onUpdateEmployee),
+      deleteCallback: d => actions.onDeleteEmployee(d.onDeleteEmployee.id)
+    });
+
+    return () => subscriptionList.forEach(s => s.unsubscribe());
+  }, [actions, subscribe]);
 
   const handleDetailDialogOpen = rowData => {
     setCurrentDetail(rowData);
@@ -35,7 +41,7 @@ export default function EmployeeTable() {
     <React.Fragment>
       <MaterialTable
         title="Employees"
-        data={employeeData}
+        data={employeeData.map(o => ({ ...o }))} // https://github.com/mbrn/material-table/issues/666
         columns={[
           { title: "First Name", field: "firstname" },
           { title: "Last Name", field: "lastname" },
@@ -43,7 +49,7 @@ export default function EmployeeTable() {
             title: "Addresses",
             field: "addresses",
             editable: "never",
-            render: a => a.addresses.items.length,
+            render: a => (a ? a.addresses.items.length : null),
             customFilterAndSearch: (term, rowData) =>
               rowData.addresses.items.some(a =>
                 Object.values(a).some(v =>
@@ -55,7 +61,8 @@ export default function EmployeeTable() {
             title: "Skills",
             field: "skills",
             editable: "never",
-            render: s => s.skills.items.map(s => s.skill.name).join(", "),
+            render: s =>
+              s ? s.skills.items.map(s => s.skill.name).join(", ") : null,
             customFilterAndSearch: (term, rowData) =>
               rowData.skills.some(s =>
                 s.name.toLowerCase().includes(term.toLowerCase())
@@ -71,23 +78,10 @@ export default function EmployeeTable() {
         ]}
         editable={{
           onRowAdd: ({ firstname, lastname }) =>
-            API.graphql(
-              graphqlOperation(mutations.createEmployee, {
-                input: { firstname, lastname }
-              })
-            ),
+            actions.createEmployee({ firstname, lastname }),
           onRowUpdate: ({ id, firstname, lastname }, oldData) =>
-            API.graphql(
-              graphqlOperation(mutations.updateEmployee, {
-                input: { id, firstname, lastname }
-              })
-            ),
-          onRowDelete: ({ id }) =>
-            API.graphql(
-              graphqlOperation(mutations.deleteEmployee, {
-                input: { id }
-              })
-            )
+            actions.updateEmployee({ id, firstname, lastname }),
+          onRowDelete: ({ id }) => actions.deleteEmployee(id)
         }}
       />
       <EmployeeDetail
@@ -98,3 +92,10 @@ export default function EmployeeTable() {
     </React.Fragment>
   );
 }
+
+const mapStateToProps = state => ({ employeeData: state.employees });
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(employeeActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmployeeTable);

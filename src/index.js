@@ -10,6 +10,8 @@ import {
   CssBaseline,
   MuiThemeProvider
 } from "@material-ui/core";
+import { Provider } from "react-redux";
+import configureAppStore from "./configureStore";
 
 Amplify.configure(awsconfig);
 
@@ -19,10 +21,14 @@ const customTheme = createMuiTheme({
   }
 });
 
+const store = configureAppStore();
+
 ReactDOM.render(
   <MuiThemeProvider theme={customTheme}>
     <CssBaseline />
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </MuiThemeProvider>,
   document.getElementById("root")
 );

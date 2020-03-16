@@ -12,7 +12,6 @@ export default function SkillTable() {
     const fetchSkillData = async () => {
       const result = await API.graphql(graphqlOperation(queries.listSkills));
       setSkillData(result.data.listSkills.items);
-      console.log(result);
     };
 
     fetchSkillData();
