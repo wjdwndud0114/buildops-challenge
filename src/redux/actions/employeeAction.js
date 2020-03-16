@@ -5,14 +5,14 @@ import * as mutations from "../../graphql/mutations";
 export const LOADING = "LOADING";
 export const LOAD_EMPLOYEES = "LOAD_EMPLOYEES";
 export const CREATE_EMPLOYEE = "CREATE_EMPLOYEE";
-export const DELETE_EMPOLYEE = "DELETE_EMPOLYEE";
+export const DELETE_EMPLOYEE = "DELETE_EMPLOYEE";
 export const UPDATE_EMPLOYEE = "UPDATE_EMPLOYEE";
 
 export const loadEmployees = () => dispatch => {
   dispatch({ type: LOADING });
-  return API.graphql(graphqlOperation(queries.listEmployeesFull)).then(result =>
-    dispatch(onLoadEmployees(result.data.listEmployees.items))
-  );
+  return API.graphql(
+    graphqlOperation(queries.listEmployeesForTable)
+  ).then(result => dispatch(onLoadEmployees(result.data.listEmployees.items)));
 };
 
 export const onLoadEmployees = employees => ({
@@ -63,4 +63,4 @@ export const deleteEmployee = id => dispatch => {
     .catch(e => console.error(e));
 };
 
-export const onDeleteEmployee = ({ id }) => ({ type: DELETE_EMPOLYEE, id });
+export const onDeleteEmployee = ({ id }) => ({ type: DELETE_EMPLOYEE, id });

@@ -1,47 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import MaterialTable from "material-table";
-import { graphqlOperation, API } from "aws-amplify";
-import * as queries from "../../../graphql/queries";
-import * as mutations from "../../../graphql/mutations";
+import * as subscriptions from "../../../graphql/subscriptions";
+import * as skillActions from "../../../redux/actions/skillAction";
+import { useSubscribeCUD } from "../../../hooks/subscription";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-export default function SkillTable() {
-  const testData = [{ id: "23452", name: "React" }];
-  const [skillData, setSkillData] = useState(testData);
+function SkillTable({ skillData, loading, actions }) {
+  const subscribe = useSubscribeCUD;
 
   useEffect(() => {
-    const fetchSkillData = async () => {
-      const result = await API.graphql(graphqlOperation(queries.listSkills));
-      setSkillData(result.data.listSkills.items);
-    };
+    actions.loadSkills();
 
-    fetchSkillData();
-  }, []);
+    const subscriptionList = subscribe({
+      createSub: subscriptions.onCreateSkill,
+      updateSub: subscriptions.onUpdateSkill,
+      deleteSub: subscriptions.onDeleteSkill,
+      createCallback: d => actions.onCreateSkill(d.onCreateSkill),
+      updateCallback: d => actions.onUpdateSkill(d.onUpdateSkill),
+      deleteCallback: d => actions.onDeleteSkill(d.onDeleteSkill.id)
+    });
+
+    return () => subscriptionList.forEach(s => s.unsubscribe());
+  }, [actions, subscribe]);
 
   return (
     <MaterialTable
       title="Skills"
-      data={skillData}
-      columns={[{ title: "Skill Name", field: "name" }]}
+      data={skillData.map(o => ({ ...o }))}
+      isLoading={loading}
+      columns={[{ title: "Skill Name", field: "name", defaultSort: "asc" }]}
       editable={{
-        onRowAdd: ({ name }) =>
-          API.graphql(
-            graphqlOperation(mutations.createSkill, {
-              input: { name }
-            })
-          ),
+        onRowAdd: ({ name }) => actions.createSkill({ name }),
         onRowUpdate: ({ id, name }, oldData) =>
-          API.graphql(
-            graphqlOperation(mutations.updateSkill, {
-              input: { id, name }
-            })
-          ),
-        onRowDelete: ({ id }) =>
-          API.graphql(
-            graphqlOperation(mutations.deleteSkill, {
-              input: { id }
-            })
-          )
+          actions.updateSkill({ id, name }),
+        onRowDelete: ({ id }) => actions.deleteSkill(id)
       }}
     />
   );
 }
+
+const mapStateToProps = state => ({
+  skillData: state.skills.data,
+  loading: state.skills.tableLoading
+});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(skillActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SkillTable);

@@ -1,4 +1,4 @@
-export const listEmployeesFull = /* GraphQL */ `
+export const listEmployeesForTable = /* GraphQL */ `
   query ListEmployees(
     $filter: ModelEmployeeFilterInput
     $limit: Int
@@ -26,6 +26,30 @@ export const listEmployeesFull = /* GraphQL */ `
             skill {
               id
               name
+            }
+          }
+          nextToken
+        }
+      }
+      nextToken
+    }
+  }
+`;
+
+export const listSkillsForTable = /* GraphQL */ `
+  query ListSkills(
+    $filter: ModelSkillFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSkills(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        employees {
+          items {
+            employee {
+              id
             }
           }
           nextToken
