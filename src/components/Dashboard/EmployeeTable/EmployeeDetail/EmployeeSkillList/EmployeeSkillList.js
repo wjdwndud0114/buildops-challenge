@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   FormControl,
   Input,
@@ -10,8 +10,12 @@ import {
   Typography,
   useTheme
 } from "@material-ui/core";
-import { API, graphqlOperation } from "aws-amplify";
-import * as queries from "../../../../../graphql/queries";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { useSubscribeCUD } from "../../../../../hooks/subscribeCUD";
+import * as subscriptions from "../../../../../graphql/subscriptions";
+import * as skillActions from "../../../../../redux/actions/skillAction";
+import * as employeeSkillActions from "../../../../../redux/actions/employeeSkillAction";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -33,31 +37,50 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function EmployeeSkillList({ employeeId, data }) {
+function EmployeeSkillList({
+  employeeId,
+  data,
+  loading,
+  actions,
+  sActions,
+  skillData
+}) {
   const theme = useTheme();
   const classes = useStyles(theme);
-  const [selectedSkills, setSelectedSkills] = useState(data);
-  const [skillSet, setSkillSet] = useState([]);
+  const subscribe = useSubscribeCUD;
 
   useEffect(() => {
-    const fetchSkillData = async () => {
-      const result = await API.graphql(graphqlOperation(queries.listSkills));
-      setSkillSet(result.data.listSkills.items);
-      console.log(result);
-    };
+    const subscriptionList = subscribe({
+      createSub: subscriptions.onCreateEmployeeSkill,
+      updateSub: subscriptions.onUpdateEmployeeSkill,
+      deleteSub: subscriptions.onDeleteEmployeeSkill,
+      createCallback: d => sActions.loadSkill(d.onCreateEmployeeSkill),
+      updateCallback: d => sActions.loadSkill(d.onUpdateEmployeeSkill),
+      deleteCallback: d => sActions.loadSkill(d.onDeleteEmployeeSkill)
+    });
 
-    fetchSkillData();
-  }, []);
+    return () => subscriptionList.forEach(s => s.unsubscribe());
+  }, [actions, sActions, employeeId, subscribe]);
 
   const handleChange = e => {
-    const skillId = e.target.value;
-    console.log(skillId);
-    // API.graphql(
-    //   graphqlOperation(mutations.createEmployeeSkill, {
-    //     input: { employeeId, skillId }
-    //   })
-    // );
-    setSelectedSkills(skillId);
+    const skillIds = e.target.value;
+    const addedSkill =
+      skillIds && data
+        ? skillIds.filter(s => !data.includes(s))
+        : skillIds && !data
+        ? skillIds
+        : [];
+    if (addedSkill.length > 0) {
+      actions.createEmployeeSkill({ employeeId, skillId: addedSkill[0] });
+      return;
+    }
+    const removedSkill =
+      skillIds && data ? data.filter(s => !skillIds.includes(s)) : data;
+
+    const id = skillData
+      .find(s => s.id === removedSkill[0])
+      .employees.items.find(e => e.employee.id === employeeId).id;
+    actions.deleteEmployeeSkill(id);
   };
 
   return (
@@ -68,7 +91,7 @@ export default function EmployeeSkillList({ employeeId, data }) {
       <FormControl className={classes.formControl}>
         <Select
           multiple
-          value={selectedSkills}
+          value={data}
           onChange={handleChange}
           input={<Input />}
           renderValue={selected => (
@@ -77,8 +100,8 @@ export default function EmployeeSkillList({ employeeId, data }) {
                 <Chip
                   key={skillId}
                   label={
-                    skillSet.length > 0
-                      ? skillSet.find(s => s.id === skillId).name
+                    skillData.length > 0
+                      ? skillData.find(s => s.id === skillId).name
                       : null
                   }
                   className={classes.chip}
@@ -87,8 +110,8 @@ export default function EmployeeSkillList({ employeeId, data }) {
             </div>
           )}
         >
-          {skillSet.map(s => (
-            <MenuItem key={s.id} value={s.id}>
+          {skillData.map(s => (
+            <MenuItem disabled={loading} key={s.id} value={s.id}>
               {s.name}
             </MenuItem>
           ))}
@@ -97,3 +120,14 @@ export default function EmployeeSkillList({ employeeId, data }) {
     </Paper>
   );
 }
+
+const mapStateToProps = state => ({
+  skillData: state.skills.data,
+  loading: state.employees.tableLoading
+});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(employeeSkillActions, dispatch),
+  sActions: bindActionCreators(skillActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmployeeSkillList);

@@ -3,7 +3,7 @@ import MaterialTable from "material-table";
 import EmployeeDetail from "./EmployeeDetail/EmployeeDetail";
 import * as subscriptions from "../../../graphql/subscriptions";
 import * as employeeActions from "../../../redux/actions/employeeAction";
-import { useSubscribeCUD } from "../../../hooks/subscription";
+import { useSubscribeCUD } from "../../../hooks/subscribeCUD";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -11,6 +11,11 @@ function EmployeeTable({ employeeData, loading, actions }) {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [currentDetail, setCurrentDetail] = useState(null);
   const subscribe = useSubscribeCUD;
+
+  useEffect(() => {
+    if (currentDetail != null)
+      setCurrentDetail(employeeData.find(e => e.id === currentDetail.id));
+  }, [currentDetail, employeeData]);
 
   useEffect(() => {
     actions.loadEmployees();
@@ -61,10 +66,10 @@ function EmployeeTable({ employeeData, loading, actions }) {
             title: "Skills",
             field: "skills",
             editable: "never",
-            render: s =>
-              s ? s.skills.items.map(s => s.skill.name).join(", ") : null,
+            render: e =>
+              e ? e.skills.items.map(s => s.skill.name).join(", ") : null,
             customFilterAndSearch: (term, rowData) =>
-              rowData.skills.some(s =>
+              rowData.skills.items.some(s =>
                 s.name.toLowerCase().includes(term.toLowerCase())
               )
           }

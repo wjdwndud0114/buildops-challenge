@@ -3,7 +3,7 @@ import {
   CREATE_EMPLOYEE,
   UPDATE_EMPLOYEE,
   DELETE_EMPLOYEE,
-  LOADING
+  EMPLOYEE_LOADING
 } from "../actions/employeeAction";
 
 export const employees = (
@@ -12,7 +12,7 @@ export const employees = (
 ) => {
   let newData = [];
   switch (action.type) {
-    case LOADING: {
+    case EMPLOYEE_LOADING: {
       return { tableLoading: true, data: state.data };
     }
     case LOAD_EMPLOYEES: {

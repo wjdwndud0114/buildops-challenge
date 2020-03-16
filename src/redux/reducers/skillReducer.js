@@ -3,29 +3,29 @@ import {
   CREATE_SKILL,
   UPDATE_SKILL,
   DELETE_SKILL,
-  LOADING
+  SKILL_LOADING
 } from "../actions/skillAction";
 
 export const skills = (state = { tableLoading: false, data: [] }, action) => {
   let newData = [];
   switch (action.type) {
-    case LOADING: {
+    case SKILL_LOADING: {
       return { tableLoading: true, data: state.data };
     }
     case LOAD_SKILLS: {
-      newData = action.employees;
+      newData = action.skills;
       break;
     }
     case CREATE_SKILL: {
-      newData = [...state.data, action.employee];
+      newData = [...state.data, action.skill];
       break;
     }
     case UPDATE_SKILL: {
-      const index = state.data.findIndex(v => v.id === action.employee.id);
+      const index = state.data.findIndex(v => v.id === action.skill.id);
       newData = [
         ...state.data.slice(0, index),
         ...state.data.slice(index + 1),
-        action.employee
+        action.skill
       ];
       break;
     }
@@ -38,5 +38,8 @@ export const skills = (state = { tableLoading: false, data: [] }, action) => {
       return state;
   }
 
-  return { tableLoading: false, data: newData };
+  return {
+    tableLoading: false,
+    data: newData.sort((a, b) => a.name.localeCompare(b.name))
+  };
 };

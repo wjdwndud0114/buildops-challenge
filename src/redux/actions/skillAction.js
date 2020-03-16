@@ -1,27 +1,40 @@
 import { API, graphqlOperation } from "aws-amplify";
 import * as queries from "../../graphql/customQueries";
 import * as mutations from "../../graphql/mutations";
+import { EMPLOYEE_LOADING, loadEmployee } from "./employeeAction";
 
-export const LOADING = "LOADING";
+export const SKILL_LOADING = "SKILL_LOADING";
+export const LOAD_SKILL = "LOAD_SKILL";
 export const LOAD_SKILLS = "LOAD_SKILLS";
 export const CREATE_SKILL = "CREATE_SKILL";
 export const DELETE_SKILL = "DELETE_SKILL";
 export const UPDATE_SKILL = "UPDATE_SKILL";
 
-export const loadSkills = () => dispatch => {
-  dispatch({ type: LOADING });
+export const loadSkill = ({ skillId, employeeId }) => dispatch => {
+  dispatch({ type: SKILL_LOADING });
+  dispatch({ type: EMPLOYEE_LOADING });
+  dispatch(loadEmployee(employeeId));
   return API.graphql(
-    graphqlOperation(queries.listSkillsForTable)
-  ).then(result => dispatch(onLoadSkills(result.data.listSkills.items)));
+    graphqlOperation(queries.getSkillForTable, { id: skillId })
+  )
+    .then(result => dispatch(onUpdateSkill(result.data.getSkill)))
+    .catch(e => console.error(e));
 };
 
-export const onLoadSkills = employees => ({
+export const loadSkills = () => dispatch => {
+  dispatch({ type: SKILL_LOADING });
+  return API.graphql(graphqlOperation(queries.listSkillsForTable))
+    .then(result => dispatch(onLoadSkills(result.data.listSkills.items)))
+    .catch(e => console.error(e));
+};
+
+export const onLoadSkills = skills => ({
   type: LOAD_SKILLS,
-  employees
+  skills
 });
 
 export const createSkill = ({ name }) => dispatch => {
-  dispatch({ type: LOADING });
+  dispatch({ type: SKILL_LOADING });
   return API.graphql(
     graphqlOperation(mutations.createSkill, {
       input: { name }
@@ -31,13 +44,13 @@ export const createSkill = ({ name }) => dispatch => {
     .catch(e => console.error(e));
 };
 
-export const onCreateSkill = employee => ({
+export const onCreateSkill = skill => ({
   type: CREATE_SKILL,
-  employee
+  skill
 });
 
 export const updateSkill = ({ id, name }) => dispatch => {
-  dispatch({ type: LOADING });
+  dispatch({ type: SKILL_LOADING });
   return API.graphql(
     graphqlOperation(mutations.updateSkill, {
       input: { id, name }
@@ -47,13 +60,13 @@ export const updateSkill = ({ id, name }) => dispatch => {
     .catch(e => console.error(e));
 };
 
-export const onUpdateSkill = employee => ({
+export const onUpdateSkill = skill => ({
   type: UPDATE_SKILL,
-  employee
+  skill
 });
 
 export const deleteSkill = id => dispatch => {
-  dispatch({ type: LOADING });
+  dispatch({ type: SKILL_LOADING });
   return API.graphql(
     graphqlOperation(mutations.deleteSkill, {
       input: { id }
@@ -63,4 +76,4 @@ export const deleteSkill = id => dispatch => {
     .catch(e => console.error(e));
 };
 
-export const onDeleteSkill = ({ id }) => ({ type: DELETE_SKILL, id });
+export const onDeleteSkill = id => ({ type: DELETE_SKILL, id });
