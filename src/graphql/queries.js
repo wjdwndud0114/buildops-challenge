@@ -9,17 +9,35 @@ export const getEmployee = /* GraphQL */ `
       lastname
       addresses {
         items {
+          id
+          employeeId
           line1
           line2
           city
           state
           zipcode
+          employee {
+            id
+            firstname
+            lastname
+          }
         }
         nextToken
       }
       skills {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -38,9 +56,23 @@ export const listEmployees = /* GraphQL */ `
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -51,6 +83,8 @@ export const listEmployees = /* GraphQL */ `
 export const getAddress = /* GraphQL */ `
   query GetAddress($id: ID!) {
     getAddress(id: $id) {
+      id
+      employeeId
       line1
       line2
       city
@@ -61,9 +95,23 @@ export const getAddress = /* GraphQL */ `
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -78,6 +126,8 @@ export const listAddresss = /* GraphQL */ `
   ) {
     listAddresss(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
+        id
+        employeeId
         line1
         line2
         city
@@ -87,6 +137,12 @@ export const listAddresss = /* GraphQL */ `
           id
           firstname
           lastname
+          addresses {
+            nextToken
+          }
+          skills {
+            nextToken
+          }
         }
       }
       nextToken
@@ -101,6 +157,17 @@ export const getSkill = /* GraphQL */ `
       employees {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -118,6 +185,11 @@ export const listSkills = /* GraphQL */ `
         id
         name
         employees {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }

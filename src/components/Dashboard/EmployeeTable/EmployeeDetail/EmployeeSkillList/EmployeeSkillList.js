@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FormControl,
   Input,
@@ -10,6 +10,8 @@ import {
   Typography,
   useTheme
 } from "@material-ui/core";
+import { API, graphqlOperation } from "aws-amplify";
+import * as queries from "../../../../../graphql/queries";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -32,15 +34,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function EmployeeSkillList({ employeeId, data }) {
-  const testData = [
-    { id: "23452", name: "React" },
-    { id: "34343", name: "Angular" }
-  ];
-
   const theme = useTheme();
   const classes = useStyles(theme);
   const [selectedSkills, setSelectedSkills] = useState(data);
-  const [skillSet, setSkillSet] = useState(testData);
+  const [skillSet, setSkillSet] = useState([]);
+
+  useEffect(() => {
+    const fetchSkillData = async () => {
+      const result = await API.graphql(graphqlOperation(queries.listSkills));
+      setSkillSet(result.data.listSkills.items);
+      console.log(result);
+    };
+
+    fetchSkillData();
+  }, []);
+
   const handleChange = e => {
     setSelectedSkills(e.target.value);
   };
@@ -61,7 +69,11 @@ export default function EmployeeSkillList({ employeeId, data }) {
               {selected.map(skillId => (
                 <Chip
                   key={skillId}
-                  label={skillSet.find(s => s.id === skillId).name}
+                  label={
+                    skillSet.length > 0
+                      ? skillSet.find(s => s.id === skillId).name
+                      : skillId
+                  }
                   className={classes.chip}
                 />
               ))}

@@ -12,17 +12,35 @@ export const createEmployee = /* GraphQL */ `
       lastname
       addresses {
         items {
+          id
+          employeeId
           line1
           line2
           city
           state
           zipcode
+          employee {
+            id
+            firstname
+            lastname
+          }
         }
         nextToken
       }
       skills {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -40,17 +58,35 @@ export const updateEmployee = /* GraphQL */ `
       lastname
       addresses {
         items {
+          id
+          employeeId
           line1
           line2
           city
           state
           zipcode
+          employee {
+            id
+            firstname
+            lastname
+          }
         }
         nextToken
       }
       skills {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -68,17 +104,35 @@ export const deleteEmployee = /* GraphQL */ `
       lastname
       addresses {
         items {
+          id
+          employeeId
           line1
           line2
           city
           state
           zipcode
+          employee {
+            id
+            firstname
+            lastname
+          }
         }
         nextToken
       }
       skills {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -91,6 +145,8 @@ export const createAddress = /* GraphQL */ `
     $condition: ModelAddressConditionInput
   ) {
     createAddress(input: $input, condition: $condition) {
+      id
+      employeeId
       line1
       line2
       city
@@ -101,9 +157,23 @@ export const createAddress = /* GraphQL */ `
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -116,6 +186,8 @@ export const updateAddress = /* GraphQL */ `
     $condition: ModelAddressConditionInput
   ) {
     updateAddress(input: $input, condition: $condition) {
+      id
+      employeeId
       line1
       line2
       city
@@ -126,9 +198,23 @@ export const updateAddress = /* GraphQL */ `
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -141,6 +227,8 @@ export const deleteAddress = /* GraphQL */ `
     $condition: ModelAddressConditionInput
   ) {
     deleteAddress(input: $input, condition: $condition) {
+      id
+      employeeId
       line1
       line2
       city
@@ -151,9 +239,23 @@ export const deleteAddress = /* GraphQL */ `
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -167,14 +269,30 @@ export const createEmployeeSkill = /* GraphQL */ `
   ) {
     createEmployeeSkill(input: $input, condition: $condition) {
       id
+      employeeId
+      skillId
       employee {
         id
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -182,6 +300,11 @@ export const createEmployeeSkill = /* GraphQL */ `
         id
         name
         employees {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -195,14 +318,30 @@ export const updateEmployeeSkill = /* GraphQL */ `
   ) {
     updateEmployeeSkill(input: $input, condition: $condition) {
       id
+      employeeId
+      skillId
       employee {
         id
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -210,6 +349,11 @@ export const updateEmployeeSkill = /* GraphQL */ `
         id
         name
         employees {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -223,14 +367,30 @@ export const deleteEmployeeSkill = /* GraphQL */ `
   ) {
     deleteEmployeeSkill(input: $input, condition: $condition) {
       id
+      employeeId
+      skillId
       employee {
         id
         firstname
         lastname
         addresses {
+          items {
+            id
+            employeeId
+            line1
+            line2
+            city
+            state
+            zipcode
+          }
           nextToken
         }
         skills {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -238,6 +398,11 @@ export const deleteEmployeeSkill = /* GraphQL */ `
         id
         name
         employees {
+          items {
+            id
+            employeeId
+            skillId
+          }
           nextToken
         }
       }
@@ -255,6 +420,17 @@ export const createSkill = /* GraphQL */ `
       employees {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -272,6 +448,17 @@ export const updateSkill = /* GraphQL */ `
       employees {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }
@@ -289,6 +476,17 @@ export const deleteSkill = /* GraphQL */ `
       employees {
         items {
           id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
         }
         nextToken
       }

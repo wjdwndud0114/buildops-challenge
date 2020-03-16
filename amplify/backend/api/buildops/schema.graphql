@@ -2,24 +2,33 @@ type Employee @model {
   id: ID!
   firstname: String!
   lastname: String!
-  addresses: [Address] @connection(name: "EmployeeAddresses")
-  skills: [EmployeeSkill] @connection(name: "EmployeeToSkills")
+  addresses: [Address] @connection(keyName: "ofEmployee", fields: ["id"])
+  skills: [EmployeeSkill]
+    @connection(keyName: "employeeOfSkill", fields: ["id"])
 }
-type Address @model {
+type Address @model @key(name: "ofEmployee", fields: ["employeeId"]) {
+  id: ID!
+  employeeId: ID!
   line1: String!
   line2: String
   city: String!
   state: String!
   zipcode: String!
-  employee: Employee @connection(name: "EmployeeAddresses")
+  employee: Employee @connection(fields: ["employeeId"])
 }
-type EmployeeSkill @model(queries: null) {
+type EmployeeSkill
+  @model(queries: null)
+  @key(name: "employeeOfSkill", fields: ["employeeId", "skillId"])
+  @key(name: "skillOfEmployee", fields: ["skillId", "employeeId"]) {
   id: ID!
-  employee: Employee! @connection(name: "EmployeeToSkills")
-  skill: Skill! @connection(name: "SkillToEmployees")
+  employeeId: ID!
+  skillId: ID!
+  employee: Employee! @connection(fields: ["employeeId"])
+  skill: Skill! @connection(fields: ["skillId"])
 }
 type Skill @model {
   id: ID!
   name: String!
-  employees: [EmployeeSkill] @connection(name: "SkillToEmployees")
+  employees: [EmployeeSkill]
+    @connection(keyName: "skillOfEmployee", fields: ["id"])
 }

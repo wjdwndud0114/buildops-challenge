@@ -2,8 +2,10 @@ import React from "react";
 import { render } from "@testing-library/react";
 import App from "./App";
 
-test("renders learn react link", () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe("App component test", () => {
+  test("renders the appbar with menu button", () => {
+    const { getByRole } = render(<App />);
+    const linkElement = getByRole("button", { name: /Open drawer/i });
+    expect(linkElement).toBeVisible();
+  });
 });

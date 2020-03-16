@@ -1,52 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import EmployeeDetail from "./EmployeeDetail/EmployeeDetail";
+import { API, graphqlOperation } from "aws-amplify";
+import * as queries from "../../../graphql/customQueries";
+import * as mutations from "../../../graphql/mutations";
 
 export default function EmployeeTable() {
-  const testData = [
-    {
-      id: "18247",
-      firstname: "Kevin",
-      lastname: "Jeong",
-      addresses: [
-        {
-          line1: "2255 Montrose Avenue",
-          line2: "Apt 15",
-          city: "Montrose",
-          state: "CA",
-          zipcode: "91020"
-        }
-      ],
-      skills: [
-        { id: "34343", name: "Angular" },
-        { id: "23452", name: "React" }
-      ]
-    },
-    {
-      id: "18245",
-      firstname: "Kevin",
-      lastname: "Jeong",
-      addresses: [],
-      skills: [{ id: "23452", name: "React" }]
-    },
-    {
-      id: "18244",
-      firstname: "Kevin",
-      lastname: "Jeong",
-      addresses: [],
-      skills: [{ id: "23452", name: "React" }]
-    },
-    {
-      id: "18243",
-      firstname: "Kevin",
-      lastname: "Jeong",
-      addresses: [],
-      skills: [{ id: "23452", name: "React" }]
-    }
-  ];
-  const [employeeData, setEmployeeData] = useState(testData);
+  const [employeeData, setEmployeeData] = useState([]);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [currentDetail, setCurrentDetail] = useState(null);
+
+  useEffect(() => {
+    const fetchEmployeeData = async () => {
+      const result = await API.graphql(
+        graphqlOperation(queries.listEmployeesFull)
+      );
+      setEmployeeData(result.data.listEmployees.items);
+      console.log(result);
+    };
+
+    fetchEmployeeData();
+  }, []);
 
   const handleDetailDialogOpen = rowData => {
     setCurrentDetail(rowData);
@@ -69,9 +43,9 @@ export default function EmployeeTable() {
             title: "Addresses",
             field: "addresses",
             editable: "never",
-            render: a => a.addresses.length,
+            render: a => a.addresses.items.length,
             customFilterAndSearch: (term, rowData) =>
-              rowData.addresses.some(a =>
+              rowData.addresses.items.some(a =>
                 Object.values(a).some(v =>
                   v.toLowerCase().includes(term.toLowerCase())
                 )
@@ -81,7 +55,7 @@ export default function EmployeeTable() {
             title: "Skills",
             field: "skills",
             editable: "never",
-            render: s => s.skills.map(s => s.name).join(", "),
+            render: s => s.skills.items.map(s => s.skill.name).join(", "),
             customFilterAndSearch: (term, rowData) =>
               rowData.skills.some(s =>
                 s.name.toLowerCase().includes(term.toLowerCase())
@@ -96,9 +70,9 @@ export default function EmployeeTable() {
           }
         ]}
         editable={{
-          onRowAdd: newData => null,
-          onRowUpdate: (newData, oldData) => null,
-          onRowDelete: oldData => null
+          onRowAdd: newData => console.log(newData),
+          onRowUpdate: (newData, oldData) => console.log(newData, oldData),
+          onRowDelete: oldData => console.log(oldData)
         }}
       />
       <EmployeeDetail

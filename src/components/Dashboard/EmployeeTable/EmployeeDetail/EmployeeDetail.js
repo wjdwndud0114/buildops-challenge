@@ -39,12 +39,12 @@ export default function EmployeeDetail({ open, handleClose, data }) {
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
-            <AddressTable employeeId={data.id} data={data.addresses} />
+            <AddressTable employeeId={data.id} data={data.addresses.items} />
           </Grid>
           <Grid item xs={12} md={4}>
             <EmployeeSkillList
               employeeId={data.id}
-              data={data.skills.map(s => s.id)}
+              data={data.skills.items.map(s => s.skill.id)}
             />
           </Grid>
         </Grid>
