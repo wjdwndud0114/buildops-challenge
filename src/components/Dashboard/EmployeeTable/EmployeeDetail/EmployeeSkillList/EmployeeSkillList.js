@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { API, graphqlOperation } from "aws-amplify";
 import * as queries from "../../../../../graphql/queries";
+import * as mutations from "../../../../../graphql/mutations";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -50,7 +51,14 @@ export default function EmployeeSkillList({ employeeId, data }) {
   }, []);
 
   const handleChange = e => {
-    setSelectedSkills(e.target.value);
+    const skillId = e.target.value;
+    console.log(skillId);
+    // API.graphql(
+    //   graphqlOperation(mutations.createEmployeeSkill, {
+    //     input: { employeeId, skillId }
+    //   })
+    // );
+    setSelectedSkills(skillId);
   };
 
   return (
@@ -72,7 +80,7 @@ export default function EmployeeSkillList({ employeeId, data }) {
                   label={
                     skillSet.length > 0
                       ? skillSet.find(s => s.id === skillId).name
-                      : skillId
+                      : null
                   }
                   className={classes.chip}
                 />

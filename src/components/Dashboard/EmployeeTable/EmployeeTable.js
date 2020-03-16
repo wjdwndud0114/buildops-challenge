@@ -70,9 +70,24 @@ export default function EmployeeTable() {
           }
         ]}
         editable={{
-          onRowAdd: newData => console.log(newData),
-          onRowUpdate: (newData, oldData) => console.log(newData, oldData),
-          onRowDelete: oldData => console.log(oldData)
+          onRowAdd: ({ firstname, lastname }) =>
+            API.graphql(
+              graphqlOperation(mutations.createEmployee, {
+                input: { firstname, lastname }
+              })
+            ),
+          onRowUpdate: ({ id, firstname, lastname }, oldData) =>
+            API.graphql(
+              graphqlOperation(mutations.updateEmployee, {
+                input: { id, firstname, lastname }
+              })
+            ),
+          onRowDelete: ({ id }) =>
+            API.graphql(
+              graphqlOperation(mutations.deleteEmployee, {
+                input: { id }
+              })
+            )
         }}
       />
       <EmployeeDetail

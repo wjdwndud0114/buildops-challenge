@@ -1,5 +1,7 @@
 import React from "react";
 import MaterialTable from "material-table";
+import { API, graphqlOperation } from "aws-amplify";
+import * as mutations from "../../../../../graphql/mutations";
 
 export default function AddressTable({ employeeId, data }) {
   return (
@@ -14,9 +16,24 @@ export default function AddressTable({ employeeId, data }) {
         { title: "Zipcode", field: "zipcode" }
       ]}
       editable={{
-        onRowAdd: newData => null,
-        onRowUpdate: (newData, oldData) => null,
-        onRowDelete: oldData => null
+        onRowAdd: ({ line1, line2, city, state, zipcode }) =>
+          API.graphql(
+            graphqlOperation(mutations.createAddress, {
+              input: { employeeId, line1, line2, city, state, zipcode }
+            })
+          ),
+        onRowUpdate: ({ id, line1, line2, city, state, zipcode }, oldData) =>
+          API.graphql(
+            graphqlOperation(mutations.updateAddress, {
+              input: { employeeId, id, line1, line2, city, state, zipcode }
+            })
+          ),
+        onRowDelete: ({ id }) =>
+          API.graphql(
+            graphqlOperation(mutations.deleteAddress, {
+              input: { id }
+            })
+          )
       }}
     />
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import { graphqlOperation, API } from "aws-amplify";
 import * as queries from "../../../graphql/queries";
+import * as mutations from "../../../graphql/mutations";
 
 export default function SkillTable() {
   const testData = [{ id: "23452", name: "React" }];
@@ -23,9 +24,24 @@ export default function SkillTable() {
       data={skillData}
       columns={[{ title: "Skill Name", field: "name" }]}
       editable={{
-        onRowAdd: newData => null,
-        onRowUpdate: (newData, oldData) => null,
-        onRowDelete: oldData => null
+        onRowAdd: ({ name }) =>
+          API.graphql(
+            graphqlOperation(mutations.createSkill, {
+              input: { name }
+            })
+          ),
+        onRowUpdate: ({ id, name }, oldData) =>
+          API.graphql(
+            graphqlOperation(mutations.updateSkill, {
+              input: { id, name }
+            })
+          ),
+        onRowDelete: ({ id }) =>
+          API.graphql(
+            graphqlOperation(mutations.deleteSkill, {
+              input: { id }
+            })
+          )
       }}
     />
   );
