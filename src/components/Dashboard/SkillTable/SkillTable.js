@@ -42,7 +42,7 @@ function SkillTable({ skillData, loading, actions }) {
         onRowAdd: ({ name }) => actions.createSkill({ name }),
         onRowUpdate: ({ id, name }, oldData) =>
           actions.updateSkill({ id, name }),
-        onRowDelete: ({ id }) => actions.deleteSkill(id)
+        onRowDelete: skill => actions.deleteSkill(skill)
       }}
     />
   );

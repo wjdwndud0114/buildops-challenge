@@ -86,7 +86,7 @@ function EmployeeTable({ employeeData, loading, actions }) {
             actions.createEmployee({ firstname, lastname }),
           onRowUpdate: ({ id, firstname, lastname }, oldData) =>
             actions.updateEmployee({ id, firstname, lastname }),
-          onRowDelete: ({ id }) => actions.deleteEmployee(id)
+          onRowDelete: emp => actions.deleteEmployee(emp)
         }}
       />
       <EmployeeDetail

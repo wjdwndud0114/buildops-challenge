@@ -1,6 +1,8 @@
 import { API, graphqlOperation } from "aws-amplify";
 import * as queries from "../../graphql/customQueries";
 import * as mutations from "../../graphql/mutations";
+import { deleteAddress } from "./addressAction";
+import { deleteEmployeeSkill } from "./employeeSkillAction";
 
 export const EMPLOYEE_LOADING = "EMPLOYEE_LOADING";
 export const LOAD_EMPLOYEES = "LOAD_EMPLOYEES";
@@ -33,7 +35,7 @@ export const createEmployee = ({ firstname, lastname }) => dispatch => {
       input: { firstname, lastname }
     })
   )
-    .then(employee => console.log("finished async createEmployee"))
+    .then(result => console.log("finished async createEmployee"))
     .catch(e => console.error(e));
 };
 
@@ -49,7 +51,7 @@ export const updateEmployee = ({ id, firstname, lastname }) => dispatch => {
       input: { id, firstname, lastname }
     })
   )
-    .then(employee => console.log("finished async updateEmployee"))
+    .then(result => console.log("finished async updateEmployee"))
     .catch(e => console.error(e));
 };
 
@@ -58,14 +60,17 @@ export const onUpdateEmployee = employee => ({
   employee
 });
 
-export const deleteEmployee = id => dispatch => {
+export const deleteEmployee = emp => dispatch => {
   dispatch({ type: EMPLOYEE_LOADING });
+  // TODO: move cascade delete logic into server through lambda/rtl
+  emp.addresses.items.forEach(a => dispatch(deleteAddress(a.id)));
+  emp.skills.items.forEach(s => dispatch(deleteEmployeeSkill(s.id)));
   return API.graphql(
     graphqlOperation(mutations.deleteEmployee, {
-      input: { id }
+      input: { id: emp.id }
     })
   )
-    .then(employee => console.log("finished async deleteEmployee"))
+    .then(result => console.log("finished async deleteEmployee"))
     .catch(e => console.error(e));
 };
 
