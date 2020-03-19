@@ -1,8 +1,15 @@
 # UserCtrl
 
-Realtime application that supports CRUD queries using AppSync. Created with Amplify
+Realtime Amplify/React/Redux application that supports CRUD queries using AppSync with DynamoDB and Lambda data sources.
 
-[Demo](http://buildops-challenge-20200316093903-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/dashboard)
+Responsive for tablets and desktops.
+
+[Demo - Hosted on S3](http://buildops-challenge-20200316093903-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/dashboard)
+
+#### Model Relationships
+
+Employee ―┼――o≡ Address
+Employee ≡――――≡ Skill
 
 ## Setup
 
@@ -44,4 +51,4 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ## TODO
 
 - [ ] Testing all the functions
-- [ ] proper cascade delete on connected items
+- [x] proper cascade delete on connected items

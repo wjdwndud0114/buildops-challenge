@@ -6,7 +6,6 @@ import {
   loadEmployee,
   loadEmployees
 } from "./employeeAction";
-import { deleteEmployeeSkill } from "./employeeSkillAction";
 
 export const SKILL_LOADING = "SKILL_LOADING";
 export const LOAD_SKILL = "LOAD_SKILL";
@@ -75,14 +74,15 @@ export const onUpdateSkill = skill => ({
 
 export const deleteSkill = skill => dispatch => {
   dispatch({ type: SKILL_LOADING });
-  // TODO: move cascade delete to server
-  skill.employees.items.forEach(s => dispatch(deleteEmployeeSkill(s.id)));
   return API.graphql(
     graphqlOperation(mutations.deleteSkill, {
       input: { id: skill.id }
     })
   )
-    .then(result => console.log("finished async deleteSkill"))
+    .then(result => {
+      console.log("finished async deleteSkill");
+      dispatch(loadEmployees());
+    })
     .catch(e => console.error(e));
 };
 

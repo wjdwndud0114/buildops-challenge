@@ -1,6 +1,80 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const deleteSkill = /* GraphQL */ `
+  mutation DeleteSkill(
+    $input: DeleteSkillInput!
+    $condition: ModelSkillConditionInput
+  ) {
+    deleteSkill(input: $input, condition: $condition) {
+      id
+      name
+      employees {
+        items {
+          id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const deleteEmployee = /* GraphQL */ `
+  mutation DeleteEmployee(
+    $input: DeleteEmployeeInput!
+    $condition: ModelEmployeeConditionInput
+  ) {
+    deleteEmployee(input: $input, condition: $condition) {
+      id
+      firstname
+      lastname
+      addresses {
+        items {
+          id
+          employeeId
+          line1
+          line2
+          city
+          state
+          zipcode
+          employee {
+            id
+            firstname
+            lastname
+          }
+        }
+        nextToken
+      }
+      skills {
+        items {
+          id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
+        }
+        nextToken
+      }
+    }
+  }
+`;
 export const createEmployee = /* GraphQL */ `
   mutation CreateEmployee(
     $input: CreateEmployeeInput!
@@ -53,52 +127,6 @@ export const updateEmployee = /* GraphQL */ `
     $condition: ModelEmployeeConditionInput
   ) {
     updateEmployee(input: $input, condition: $condition) {
-      id
-      firstname
-      lastname
-      addresses {
-        items {
-          id
-          employeeId
-          line1
-          line2
-          city
-          state
-          zipcode
-          employee {
-            id
-            firstname
-            lastname
-          }
-        }
-        nextToken
-      }
-      skills {
-        items {
-          id
-          employeeId
-          skillId
-          employee {
-            id
-            firstname
-            lastname
-          }
-          skill {
-            id
-            name
-          }
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const deleteEmployee = /* GraphQL */ `
-  mutation DeleteEmployee(
-    $input: DeleteEmployeeInput!
-    $condition: ModelEmployeeConditionInput
-  ) {
-    deleteEmployee(input: $input, condition: $condition) {
       id
       firstname
       lastname
@@ -443,34 +471,6 @@ export const updateSkill = /* GraphQL */ `
     $condition: ModelSkillConditionInput
   ) {
     updateSkill(input: $input, condition: $condition) {
-      id
-      name
-      employees {
-        items {
-          id
-          employeeId
-          skillId
-          employee {
-            id
-            firstname
-            lastname
-          }
-          skill {
-            id
-            name
-          }
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const deleteSkill = /* GraphQL */ `
-  mutation DeleteSkill(
-    $input: DeleteSkillInput!
-    $condition: ModelSkillConditionInput
-  ) {
-    deleteSkill(input: $input, condition: $condition) {
       id
       name
       employees {

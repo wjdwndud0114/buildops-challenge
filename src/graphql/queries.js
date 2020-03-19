@@ -149,6 +149,40 @@ export const listAddresss = /* GraphQL */ `
     }
   }
 `;
+export const listEmployeeSkills = /* GraphQL */ `
+  query ListEmployeeSkills(
+    $filter: ModelEmployeeSkillFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listEmployeeSkills(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        employeeId
+        skillId
+        employee {
+          id
+          firstname
+          lastname
+          addresses {
+            nextToken
+          }
+          skills {
+            nextToken
+          }
+        }
+        skill {
+          id
+          name
+          employees {
+            nextToken
+          }
+        }
+      }
+      nextToken
+    }
+  }
+`;
 export const getSkill = /* GraphQL */ `
   query GetSkill($id: ID!) {
     getSkill(id: $id) {

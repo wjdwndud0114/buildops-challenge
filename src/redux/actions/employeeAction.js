@@ -1,8 +1,7 @@
 import { API, graphqlOperation } from "aws-amplify";
 import * as queries from "../../graphql/customQueries";
 import * as mutations from "../../graphql/mutations";
-import { deleteAddress } from "./addressAction";
-import { deleteEmployeeSkill } from "./employeeSkillAction";
+import { loadSkills } from "./skillAction";
 
 export const EMPLOYEE_LOADING = "EMPLOYEE_LOADING";
 export const LOAD_EMPLOYEES = "LOAD_EMPLOYEES";
@@ -62,15 +61,15 @@ export const onUpdateEmployee = employee => ({
 
 export const deleteEmployee = emp => dispatch => {
   dispatch({ type: EMPLOYEE_LOADING });
-  // TODO: move cascade delete logic into server through lambda/rtl
-  emp.addresses.items.forEach(a => dispatch(deleteAddress(a.id)));
-  emp.skills.items.forEach(s => dispatch(deleteEmployeeSkill(s.id)));
   return API.graphql(
     graphqlOperation(mutations.deleteEmployee, {
       input: { id: emp.id }
     })
   )
-    .then(result => console.log("finished async deleteEmployee"))
+    .then(result => {
+      console.log("finished async deleteEmployee");
+      dispatch(loadSkills());
+    })
     .catch(e => console.error(e));
 };
 

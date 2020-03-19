@@ -1,6 +1,74 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onDeleteEmployee = /* GraphQL */ `
+  subscription OnDeleteEmployee {
+    onDeleteEmployee {
+      id
+      firstname
+      lastname
+      addresses {
+        items {
+          id
+          employeeId
+          line1
+          line2
+          city
+          state
+          zipcode
+          employee {
+            id
+            firstname
+            lastname
+          }
+        }
+        nextToken
+      }
+      skills {
+        items {
+          id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onDeleteSkill = /* GraphQL */ `
+  subscription OnDeleteSkill {
+    onDeleteSkill {
+      id
+      name
+      employees {
+        items {
+          id
+          employeeId
+          skillId
+          employee {
+            id
+            firstname
+            lastname
+          }
+          skill {
+            id
+            name
+          }
+        }
+        nextToken
+      }
+    }
+  }
+`;
 export const onCreateEmployee = /* GraphQL */ `
   subscription OnCreateEmployee {
     onCreateEmployee {
@@ -47,49 +115,6 @@ export const onCreateEmployee = /* GraphQL */ `
 export const onUpdateEmployee = /* GraphQL */ `
   subscription OnUpdateEmployee {
     onUpdateEmployee {
-      id
-      firstname
-      lastname
-      addresses {
-        items {
-          id
-          employeeId
-          line1
-          line2
-          city
-          state
-          zipcode
-          employee {
-            id
-            firstname
-            lastname
-          }
-        }
-        nextToken
-      }
-      skills {
-        items {
-          id
-          employeeId
-          skillId
-          employee {
-            id
-            firstname
-            lastname
-          }
-          skill {
-            id
-            name
-          }
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const onDeleteEmployee = /* GraphQL */ `
-  subscription OnDeleteEmployee {
-    onDeleteEmployee {
       id
       firstname
       lastname
@@ -410,31 +435,6 @@ export const onCreateSkill = /* GraphQL */ `
 export const onUpdateSkill = /* GraphQL */ `
   subscription OnUpdateSkill {
     onUpdateSkill {
-      id
-      name
-      employees {
-        items {
-          id
-          employeeId
-          skillId
-          employee {
-            id
-            firstname
-            lastname
-          }
-          skill {
-            id
-            name
-          }
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const onDeleteSkill = /* GraphQL */ `
-  subscription OnDeleteSkill {
-    onDeleteSkill {
       id
       name
       employees {
