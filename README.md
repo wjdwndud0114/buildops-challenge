@@ -9,8 +9,8 @@ Responsive for tablets and desktops.
 
 #### Model Relationships
 
-Employee (1 to *) Address <br />
-Employee (* to *) Skill
+Employee (1 to \*) Address<br />
+Employee (\* to \*) Skill
 
 
 ## Setup
